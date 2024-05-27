@@ -3,3 +3,10 @@ venv
 
 pyrightconfig.json
 
+__pycache__/
+
+*.pyc
+*.pyo
+*.pyd
+*.swp
+.DS_Store

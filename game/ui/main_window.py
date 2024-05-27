@@ -7,8 +7,10 @@ from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 
+from game.services.constants import UILabelAttribute
 from game.services.entities.community import CommunityService
 from game.services.entities.perks.start_community import StartCommunityPerk
+from game.ui.components.label import CustomLabel
 
 
 class UiApp(App):
@@ -51,7 +53,7 @@ class UiApp(App):
             },  # Сдвиг вниз относительно первой кнопки
         )
 
-        btn2.on_press = lambda: print('sex 2')
+        btn2.on_press = self.__level_up_start_community
 
         # Добавление кнопок в layout
         layout.add_widget(btn1)
@@ -64,14 +66,18 @@ class UiApp(App):
         if not self.__community:
             community_service = CommunityService()
             self.__community = community_service.start_new_community()
-            self.__community_info = community_data = Label(text='Новое комьюнити')
+            self.__community_info = community_label = CustomLabel(
+                text=UILabelAttribute.StartCommunityPerkLabelName,
+                meta_label_name=UILabelAttribute.StartCommunityPerkLabelName,
+            )
+            self.__community.add_observer(community_label)
             self.__community_info.size_hint = self.__create_community_button.size_hint
             self.__community_info.pos_hint = self.__create_community_button.pos_hint
-            self.__layout.add_widget(community_data)
+            self.__layout.add_widget(community_label)
             self.__layout.remove_widget(self.__create_community_button)
 
     def __level_up_start_community(self):
-        StartCommunityPerk(community=self.__community)
+        StartCommunityPerk(community=self.__community).apply_perk()
 
 
 def start_game():

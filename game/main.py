@@ -1,4 +1,4 @@
-from game.ui import start_game
+from game.ui.main_window import start_game
 
 
 if __name__ == '__main__':

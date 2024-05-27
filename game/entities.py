@@ -1,7 +1,10 @@
+from abc import ABC, abstractmethod
 from enum import IntEnum
-from typing import Callable
+from typing import Any, Callable, override
 from pydantic import BaseModel, Field, conint
 import random
+
+from game.services.utils.observer import Publisher
 
 
 class Race(IntEnum):
@@ -47,21 +50,25 @@ class PhysicalCulture(BaseModel):
 
 class Person(BaseModel):
     age: int = Field(default=18)
-    race: Race = Field(default_factory=lambda x: random.choice(tuple(Race)))
+    race: Race = Field(default_factory=lambda: random.choice(tuple(Race)))
     hair_color: HairColor = Field(
-        default_factory=lambda x: random.choice(tuple(HairColor))
+        default_factory=lambda: random.choice(tuple(HairColor))
     )
     mood: Mood = Field(default_factory=Mood)
     education: Education = Field(default_factory=Education)
     physical_culture: PhysicalCulture = Field(default_factory=PhysicalCulture)
 
 
-class Perk:
+class Perk(ABC):
     community: 'Community'
     title: str
 
-    def mixin(self):
-        raise NotImplementedError
+    @abstractmethod
+    def apply_perk(self):
+        """
+        What perk will do
+        """
+        pass
 
 
 class PreciousMetals(BaseModel):
@@ -90,9 +97,13 @@ class Structure(BaseModel):
         raise NotImplementedError
 
 
-class Community(BaseModel):
+class Community(BaseModel, Publisher):
     class Config:
         arbitrary_types_allowed = True
+
+    def __init__(self, /, **data: Any) -> None:
+        super().__init__(**data)
+        Publisher.__init__(self)
 
     people_amount: Callable = None
     general_mood: Mood = Field(default=Mood())
