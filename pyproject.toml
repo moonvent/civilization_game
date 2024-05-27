@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "game"
+version = "0.1.0"
+description = ""
+authors = ["Nikita Kurkurin <nkl@reshape.team>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+kivy = "^2.3.0"
+pydantic = "^2.7.1"
+debugpy = "^1.8.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+exclude = '''
+    (^|/)(\..*|venv|build|dist)/
+'''
+skip-string-normalization = true
+color = true
